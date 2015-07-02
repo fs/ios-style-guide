@@ -1,26 +1,39 @@
 # ios-style-guide
 iOS Style Guide
 
-Вызываем функции через точку, если они возвращают значение. Вызываем функцию в скобках, если нет возвращаемого значения.
+Нужно вызывать методы заключая их в скобки, а свойства вызывать через точку.
 
-**Надо так:**
+**Верно:**
 ```objc
 array.count;
 [UIApplication sharedApplication].delegate;
 ```
 
-**Не так:**
+**Не верно:**
 ```objc
 [array count];
 UIApplication.sharedApplication.delegate;
 ```
 
-Скобки всегда египедские.
+Скобки нужно ставить в стиле K&R (на жаргоне "египетские").
 
-**Надо так:**
+**Верно:**
 ```objc
 - (void)describeCodingStyleWithCodingStyle:(MCSCodingStyle)style {
     if (MCSCodingStyleKAndR == style) {
+        [self doSomething];
+    } else {
+        [self doSomething];
+    }
+}
+```
+
+**Не верно:**
+```objc
+- (void)describeCodingStyleWithCodingStyle:(MCSCodingStyle)style 
+{
+    if (MCSCodingStyleKAndR == style) 
+    {
         [self doSomething];
     }
 }
@@ -28,45 +41,67 @@ UIApplication.sharedApplication.delegate;
 
 Всегда присваеваем значения переменной сразу после объявления.
 
-**Надо так:**
+**Верно:**
 ```objc
 NSObject *object = nil;
-NSArray *array = [NSArray array];
+NSArray *array = @[];
 ```
 
-**Не так:**
+**Не верно:**
 ```objc
 NSObject *object;
 // some actions
 ```
 
-Не надо лишних пробелов и не надо не ставить пробелов вовсе!
+Не нужно ставить лишних пробелов. Нужно всегда использовать одинарный пробел. (Если есть сомнения, то можно проверить себя выделив кусок кода, затем нажав правую клавишу, затем Structure -> Re-Indent)
 
-**Надо так:**
+**Верно:**
 ```objc
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath;
+
+NSObject *object = nil;
 ```
-**Не так:**
+
+**Не верно:**
 ```objc
 - (BOOL) tableView: (UITableView *) tableView canMoveRowAtIndexPath: (NSIndexPath *) indexPath;
 -(BOOL)tableView:(UITableView*)tableView canMoveRowAtIndexPath:(NSIndexPath*)indexPath;
+
+NSObject * object     =      nil;
 ```
 
-Объявление переменных должно выглядеть так.
+Если у функции много переменных то можно разбить объявление функции на несколько строк. В таком случае нужно поставить закрывающую скобку на следующей строке. Аналогично можно поступить с вызовом функции в коде.
 
-**Надо так:**
+**Верно:**
+```objc
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
+{
+
+}
+```
+
+При объявлении переменных не следует ставить лишних пробелов. Следует называть переменные таким образом, чтобы было понятно их назначение. Иногда для понятности можно в имени переменной использовать название класса. 
+
+**Верно:**
 ```objc
 NSArray *array = ...
+UIButton *cancelButton = ...
 ```
-**Не так:**
+
+**Не верно:**
 ```objc
 NSArray* array = ...
 NSArray * array = ...
+NSObject * object     =      ...
+NSObject *o1 = ...
 ```
 
-Предпочитай использовать свойства. Инкапсулируй переменные, которые не должны быть видны вне класса, в интерфейсе в .m файле.
+Следует использовать свойства вместо простого объявления переменных. Следует инкапсулировать свойства в .m файле, если они не должны использоваться извне класса.
 
-**Надо так:**
+**Верно:**
 ```objc
 @interface MCSObject: NSObject
 
@@ -76,27 +111,17 @@ NSArray * array = ...
 
 @end
 ```
-**Не так:**
+
+**Не верно:**
 ```objc
 @interface CustomObject : NSObject {
     NSString *title;
 }
 ```
 
-Называй переменные так, чтобы можно было легко понять для чего они нужны и объектами какого класса являются.
+Следует использовать константы вместо дефайнов.
 
-**Надо так:**
-```objc
-UIButton *magicButton;
-```
-**Не так:**
-```objc
-UIButton *mag;
-```
-
-Используй константы вместо дефайнов.
-
-**Надо так:**
+**Верно:**
 ```objc
 // MCSCompany.h
 extern NSString * const MCSCompanyTagline;
@@ -106,42 +131,61 @@ NSString * const MCSCompanyTagline = @"We make award-winning apps for Apple devi
 
 static NSString * const kOfficeLocation = @"Warsaw, Poland";
 ```
-**Не так:**
+**Не верно:**
 ```objc
 #define CompanyTagline @"We make award-winning apps for Apple devices."
 #define maxNumberOfRows 2
 ```
 
-Не синтезируй переменные сам. Компилятор делает это за тебя. Не пиши @synthesize
+Не следует синтезировать переменные самостоятельно (не нужно использовать @synthesize). Компилятор делает это автоматически.
 
-Не используй переменные класса напрямую (с нижним подчеркиванием). Всегда используй свойства. Переменные напрямую используются только в методах доступа.
+**Не верно:**
+```objc
+@synthesize myButton = _myAwesomeBtn
+```
 
-**Надо так:**
+Не следует использовать переменные класса напрямую (с нижним подчеркиванием). Всегда следует использовать свойства. Переменные напрямую следует использовать только в методах доступа.
+
+**Верно:**
 ```objc
 self.someProperty = ...
 ```
-**Не так:**
+**Не верно:**
 ```objc
 _someProperty = ...
 ```
 
-Комментируй сложные участки кода. В идеале все функции в .h файле должны быть задокументированы при помощи специальных комментариев поддерживаемых Xcode'ом.
+Следует комментировать сложные участки кода и функции в .h файле. В идеале все функции в .h файле должны быть задокументированы при помощи специальных комментариев поддерживаемых Xcode'ом.
 
-Используй синтаксический сахар
+**Верно:**
+```objc
+/**
+* This function do ...
+*
+* @param obj An object.
+* @return Some array.
+*/
+- (NSArray)someFunction:(NSObject *)obj;
 
-**Надо так:**
+/// Short documentation for function
+- (NSArray)someFunction:(NSObject *)obj;
+```
+
+Следует использовать [литералы](http://clang.llvm.org/docs/ObjectiveCLiterals).
+
+**Верно:**
 ```objc
 NSArray *names = @[@"Agata", @"Ania", @"Bartek", @"Daniel", @"Dawid", @"Dominik", @"Jarek",
-                   @"Karol", @"Klaudia", @"Maciej", @"Maciej", @"Marcin", @"Rafał", @"Wojtek",
-                   @"Wojtek", @"Zbigniew", @"Janek"];
+@"Karol", @"Klaudia", @"Maciej", @"Maciej", @"Marcin", @"Rafał", @"Wojtek",
+@"Wojtek", @"Zbigniew", @"Janek"];
 NSDictionary *animals = @{@"dogs" : @[@"Boomer"]};
 NSNumber *officeIndoorSwimmingPool = @YES;
 NSNumber *over9000 = @9001;
 ```
 
-Используй правильные перечисления.
+Следует использовать перечисления следующего вида.
 
-**Надо так:**
+**Верно:**
 ```objc
 // MCSFishEye.h
 
@@ -158,9 +202,9 @@ typedef NS_OPTIONS(NSUInteger, MCSCustomerHappiness) {
 };
 ```
 
-Булевские выражения.
+Не следует перегружать бушевские выражения в условиях.
 
-**Надо так:**
+**Верно:**
 ```objc
 if (!someObject) {
 }
@@ -172,7 +216,7 @@ if (![someObject boolValue]) {
 }
 ```
 
-**Не так:**
+**Не верно:**
 ```objc
 if (someObject == nil) {
 }
@@ -184,18 +228,31 @@ if ([someObject boolValue] == NO) {
 }
 ```
 
-Синглтоны.
+Синглтоны следует писать следующим образом.
 
-**Надо так:**
+**Верно:**
 ```objc
-+ (instancetype)sharedInstance {
-    static id sharedInstance = nil;
+static APIManager *api_manager = nil;
 
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedInstance = [[self alloc] init];
++ (instancetype)manager {
+    @synchronized(api_manager) {
+        if (!api_manager) {
+            api_manager = [self new];
+        }
+    }
+
+    return api_manager;
+}
+
+- (id)init {
+    static dispatch_once_t onceTokenAPIManager;
+    dispatch_once(&onceTokenAPIManager, ^{
+        api_manager = [super init];
+        if (api_manager) {
+            //custom initialization
+        }
     });
-
-    return sharedInstance;
+    
+    return api_manager;
 }
 ```
